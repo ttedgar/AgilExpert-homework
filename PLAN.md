@@ -7,8 +7,8 @@ A felhasználók saját asztalt (menüt, ikonokat, háttérképet, arculatot) ko
 az adatok egy központi szerveren tárolódnak.
 
 **Pozíció:** Fullstack fejlesztő
-**Stack:** Java 21, Spring Boot 3.x, Spring Data JPA, Hibernate, Thymeleaf, Bootstrap 5, PostgreSQL (prod) / H2 (dev)
-**Build:** Maven (multi-modul: `backend` + `frontend`)
+**Stack:** Java 21, Spring Boot 4.x, Spring Data JPA, Hibernate, Thymeleaf, Bootstrap 5, PostgreSQL (prod) / H2 (dev)
+**Build:** Maven (single module: `backend`)
 **Deploy:** Railway (PostgreSQL addon)
 
 ---
@@ -90,34 +90,35 @@ POST /simulation                → demo adatok betöltése
 
 ### Fázis 1 – Projekt inicializálás + Domain entitások
 
-**Cél:** az app elindul, H2 console-on látható a generált séma.
+**Cél:** az app elindul hibák nélkül, Hibernate legenerálja a sémát.
 
-#### Projekt felállítás (IntelliJ, te csinálod)
-- Maven multi-modul projekt létrehozása
-  - `parent` pom.xml (packaging: pom, modulok: backend, frontend)
-  - `backend` modul: Spring Boot, a Thymeleaf templates-t a `frontend` modulból olvassa
-  - `frontend` modul: Thymeleaf templates + static assets (CSS, JS)
-- Spring Boot dependencies (`backend/pom.xml`):
-  - `spring-boot-starter-web`
-  - `spring-boot-starter-thymeleaf`
-  - `spring-boot-starter-data-jpa`
-  - `com.h2database:h2` (scope: runtime)
-  - `org.postgresql:postgresql` (scope: runtime)
+#### Projekt struktúra (single module)
+```
+backend/src/main/
+  java/com/edi/backend/
+    domain/       ← JPA entitások
+    repository/   ← Spring Data repository interfészek
+    service/      ← üzleti logika
+    web/          ← Spring MVC controllerek
+  resources/
+    templates/    ← Thymeleaf HTML fájlok
+    static/
+      css/        ← saját stílus
+      js/         ← saját szkriptek
+    application.properties
+    application-dev.properties
+    application-prod.properties
+```
 
 #### Entitások (`backend/src/main/java/.../domain/`)
 - `User.java` – `@Entity`, `@Id`, mezők, `@OneToOne` mainMenu, `@OneToMany` wallpapers/themes
 - `Menu.java` – `@Entity`, `@ManyToOne` owner + parentMenu, `@OneToMany` items
 - `MenuItem.java` – `@Entity`, `@ManyToOne` menu + application + subMenu
-- `Application.java` – `@Entity`, name mint String (vagy enum)
+- `Application.java` – `@Entity`, name mint enum
 - `Wallpaper.java` – `@Entity`, `@ManyToOne` owner
 - `Theme.java` – `@Entity`, `@ManyToOne` owner
 
-#### Konfiguráció
-- `application-dev.properties`: H2 in-memory, `spring.jpa.hibernate.ddl-auto=create-drop`, H2 console engedélyezve
-- `application-prod.properties`: PostgreSQL, `ddl-auto=update`
-- `application.properties`: `spring.profiles.active=dev`
-
-**Tesztelés:** `mvn spring-boot:run` → app elindul hibák nélkül → `http://localhost:8080/h2-console` → táblák láthatók
+**Tesztelés:** `mvn spring-boot:run` → app elindul hibák nélkül, Hibernate sémagenerálás logban látható
 
 ---
 
@@ -151,12 +152,12 @@ POST /simulation                → demo adatok betöltése
 #### Controller
 - `UserController` – GET/POST végpontok a user listához és formokhoz
 
-#### Templates (`frontend/src/main/resources/templates/`)
+#### Templates (`backend/src/main/resources/templates/`)
 - `layout/base.html` – Thymeleaf layout fragment: navbar, Bootstrap 5 CDN, Bootstrap Icons CDN, Inter font CDN
 - `users/list.html` – user kártyák grid-ben + "Load Demo Data" gomb + "New User" gomb
 - `users/form.html` – create/edit form (name mező, mentés, mégse)
 
-#### Vizuális stílus alapjai (`frontend/src/main/resources/static/css/style.css`)
+#### Vizuális stílus alapjai (`backend/src/main/resources/static/css/style.css`)
 - Inter font
 - Lekerekített kártyák (border-radius: 16px)
 - Fehér/világosszürke háttér (#f5f5f7 – Apple gray)
@@ -278,10 +279,9 @@ feat: add Railway deployment config
 
 ---
 
-## Inicializálás (következő lépés)
+## Inicializálás – KÉSZ ✅
 
-A projekt felállításakor kérlek segíts az alábbiakkal:
-- Maven multi-modul struktúra kialakítása IntelliJ-ben
-- `parent/pom.xml` helyes konfiguráció a modulokhoz
-- `frontend` modul Thymeleaf template path konfigurálása a `backend`-ben
-- H2 console elérés ellenőrzése
+- Spring Boot 4.x backend inicializálva
+- Függőségek: web, thymeleaf, data-jpa, h2, postgresql
+- Dev/prod profilok konfigurálva
+- App elindul, Tomcat fut 8080-on

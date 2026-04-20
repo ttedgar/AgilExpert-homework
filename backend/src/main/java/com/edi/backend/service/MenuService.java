@@ -34,6 +34,9 @@ public class MenuService {
     }
 
     public Menu createSubMenu(Menu parentMenu, String name) {
+        if (parentMenu.getParentMenu() != null) {
+            throw new IllegalArgumentException("Folders cannot be nested inside other folders");
+        }
         Menu subMenu = new Menu();
         subMenu.setName(name);
         subMenu.setOwner(parentMenu.getOwner());

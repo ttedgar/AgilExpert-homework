@@ -19,6 +19,9 @@ public class Theme {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String color = "#007AFF";
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "owner_id")
     private User owner;

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Appearance')}">
+    <title>Appearance</title>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="main-content">
+    <div class="container" style="max-width: 640px">
+
+        <a th:href="@{/users/{id}/desktop(id=${user.id})}" class="back-link mb-4 d-inline-flex align-items-center">
+            <i class="bi bi-chevron-left me-1"></i>Back to Desktop
+        </a>
+
+        <h1 class="page-title mb-4" th:text="${user.name + ' – Appearance'}"></h1>
+
+        <!-- Wallpapers -->
+        <div class="form-card mb-4">
+            <h2 class="section-title mb-3"><i class="bi bi-image me-2"></i>Wallpapers</h2>
+
+            <div th:if="${#lists.isEmpty(user.wallpapers)}" class="text-secondary small mb-3">No wallpapers yet.</div>
+
+            <div class="appearance-grid mb-3">
+                <div th:each="wp : ${user.wallpapers}" class="appearance-item"
+                     th:style="'background-color:' + ${wp.color}">
+                    <div class="appearance-item-name" th:text="${wp.name}"></div>
+                    <form th:if="${user.activeWallpaper == null or user.activeWallpaper.id != wp.id}"
+                          th:action="@{/users/{id}/appearance/wallpapers/{wpId}/activate(id=${user.id}, wpId=${wp.id})}"
+                          method="post">
+                        <button type="submit" class="btn btn-sm btn-light rounded-pill">Set</button>
+                    </form>
+                    <span th:if="${user.activeWallpaper != null and user.activeWallpaper.id == wp.id}"
+                          class="badge bg-primary rounded-pill">Active</span>
+                </div>
+            </div>
+
+            <form th:action="@{/users/{id}/appearance/wallpapers(id=${user.id})}" method="post"
+                  class="d-flex gap-2 align-items-center">
+                <label for="wallpaperName" class="visually-hidden">Wallpaper name</label>
+                <input id="wallpaperName" type="text" name="name" class="form-control smartos-input"
+                       placeholder="e.g. Sunset" required>
+                <label for="wallpaperColor" class="text-secondary small text-nowrap">Color</label>
+                <input id="wallpaperColor" type="color" name="color" value="#f5c6a0"
+                       class="color-picker">
+                <button type="submit" class="btn btn-primary rounded-pill px-3 text-nowrap">
+                    <i class="bi bi-plus me-1"></i>Add
+                </button>
+            </form>
+        </div>
+
+        <!-- Themes -->
+        <div class="form-card">
+            <h2 class="section-title mb-3"><i class="bi bi-palette me-2"></i>Themes</h2>
+
+            <div th:if="${#lists.isEmpty(user.themes)}" class="text-secondary small mb-3">No themes yet.</div>
+
+            <div class="appearance-list mb-3">
+                <div th:each="theme : ${user.themes}" class="appearance-list-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="theme-dot" th:style="'background-color:' + ${theme.color}"></span>
+                        <span th:text="${theme.name}"></span>
+                        <span th:if="${user.activeTheme != null and user.activeTheme.id == theme.id}"
+                              class="badge bg-primary rounded-pill ms-1">Active</span>
+                    </div>
+                    <form th:if="${user.activeTheme == null or user.activeTheme.id != theme.id}"
+                          th:action="@{/users/{id}/appearance/themes/{themeId}/activate(id=${user.id}, themeId=${theme.id})}"
+                          method="post">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill">Apply</button>
+                    </form>
+                </div>
+            </div>
+
+            <form th:action="@{/users/{id}/appearance/themes(id=${user.id})}" method="post"
+                  class="d-flex gap-2 align-items-center">
+                <label for="themeName" class="visually-hidden">Theme name</label>
+                <input id="themeName" type="text" name="name" class="form-control smartos-input"
+                       placeholder="e.g. Ocean" required>
+                <label for="themeColor" class="text-secondary small text-nowrap">Accent</label>
+                <input id="themeColor" type="color" name="color" value="#007AFF"
+                       class="color-picker">
+                <button type="submit" class="btn btn-primary rounded-pill px-3 text-nowrap">
+                    <i class="bi bi-plus me-1"></i>Add
+                </button>
+            </form>
+        </div>
+
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

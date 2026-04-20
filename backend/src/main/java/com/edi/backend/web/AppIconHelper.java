@@ -14,4 +14,5 @@ public class AppIconHelper {
             case CONTACTS    -> "bi-person-lines-fill";
         };
     }
+
 }

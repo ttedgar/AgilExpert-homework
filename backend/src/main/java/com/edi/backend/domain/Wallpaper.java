@@ -19,6 +19,9 @@ public class Wallpaper {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String color = "#e8f0fe";
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "owner_id")
     private User owner;

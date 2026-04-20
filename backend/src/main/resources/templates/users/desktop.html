@@ -3,11 +3,12 @@
 <head th:replace="~{fragments/head :: head(${user.name + '''s Desktop'})}">
     <title>Desktop</title>
 </head>
-<body>
+<body th:style="${user.activeTheme != null ? '--primary:' + user.activeTheme.color + ';--primary-hover:' + user.activeTheme.color + ';--theme-bar-bg:' + user.activeTheme.color + ';--theme-bar-text:#ffffff' : ''}">
 
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<main class="main-content">
+<main class="main-content"
+      th:style="${user.activeWallpaper != null ? 'background-color:' + user.activeWallpaper.color : ''}">
     <div class="container-fluid px-4">
 
         <!-- Header -->

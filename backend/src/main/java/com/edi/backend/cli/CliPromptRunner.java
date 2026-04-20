@@ -8,11 +8,13 @@ import com.edi.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
+@Profile("dev")
 @Component
 @Order(2)
 @RequiredArgsConstructor
@@ -55,7 +57,6 @@ public class CliPromptRunner implements ApplicationRunner {
             } else if (os.contains("mac")) {
                 Runtime.getRuntime().exec(new String[]{"open", url});
             } else {
-                // Linux / WSL2 — try cmd.exe first (WSL2), fall back to xdg-open
                 try {
                     Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c", "start", url});
                 } catch (Exception e) {

@@ -18,6 +18,13 @@ public class MenuService {
     private final MenuItemRepository menuItemRepository;
 
     public MenuItem addAppShortcut(Menu menu, Application application, String label) {
+        boolean alreadyExists = menu.getItems().stream()
+                .filter(i -> i.getApplication() != null)
+                .anyMatch(i -> i.getApplication().getId().equals(application.getId()));
+        if (alreadyExists) {
+            throw new IllegalArgumentException(
+                    application.getType().name() + " is already in this menu");
+        }
         MenuItem item = new MenuItem();
         item.setName(label);
         item.setMenu(menu);
@@ -49,7 +56,7 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public Menu getMenuById(String id) {
-        return menuRepository.findById(id)
+        return menuRepository.findByIdWithItems(id)
                 .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + id));
     }
 }

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Edit Menu')}">
+    <title>Edit Menu</title>
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="main-content">
+    <div class="container" style="max-width: 640px">
+
+        <a th:href="@{/users/{id}/desktop(id=${user.id}, menuId=${menu.id})}"
+           class="back-link mb-4 d-inline-flex align-items-center">
+            <i class="bi bi-chevron-left me-1"></i>Back to Desktop
+        </a>
+
+        <h1 class="page-title mb-1" th:text="${user.name + ' – ' + menu.name}"></h1>
+        <p class="text-secondary small mb-4">Manage icons in this menu</p>
+
+        <div th:if="${error}" class="alert alert-danger rounded-3 mb-4" th:text="${error}"></div>
+
+        <!-- Current items -->
+        <div class="form-card mb-4">
+            <h2 class="section-title mb-3">Icons</h2>
+
+            <div th:if="${#lists.isEmpty(menu.items)}" class="text-secondary small">No icons yet.</div>
+
+            <div th:each="item : ${menu.items}" class="menu-item-row">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="app-icon app-icon-sm"
+                         th:classappend="${item.application != null ? 'app-icon-' + item.application.type.name() : 'app-icon-FOLDER'}">
+                        <i th:class="${item.application != null ?
+                            'bi ' + @appIconHelper.icon(item.application.type) :
+                            'bi bi-folder-fill'}"></i>
+                    </div>
+                    <div>
+                        <div class="fw-500" th:text="${item.name}"></div>
+                        <div class="text-secondary small"
+                             th:text="${item.application != null ? item.application.type.name() : 'Submenu'}"></div>
+                    </div>
+                </div>
+                <form th:action="@{/users/{id}/menu/items/{itemId}/delete(id=${user.id}, itemId=${item.id})}"
+                      method="post">
+                    <input type="hidden" name="menuId" th:value="${menu.id}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add app shortcut -->
+        <div class="form-card mb-4">
+            <h2 class="section-title mb-3">Add App Shortcut</h2>
+            <form th:action="@{/users/{id}/menu/items(id=${user.id})}" method="post">
+                <input type="hidden" name="menuId" th:value="${menu.id}">
+                <input type="hidden" name="type" value="app">
+                <div class="mb-3">
+                    <label for="appType" class="form-label">Application</label>
+                    <select id="appType" name="appType" class="form-select smartos-input">
+                        <option th:each="app : ${applications}"
+                                th:value="${app.type.name()}"
+                                th:text="${app.type.name()}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="label" class="form-label">Label</label>
+                    <input id="label" type="text" name="label" class="form-control smartos-input"
+                           placeholder="e.g. Minesweeper" required>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                    <i class="bi bi-plus me-1"></i>Add Shortcut
+                </button>
+            </form>
+        </div>
+
+        <!-- Add submenu -->
+        <div class="form-card">
+            <h2 class="section-title mb-3">Add Folder</h2>
+            <form th:action="@{/users/{id}/menu/items(id=${user.id})}" method="post">
+                <input type="hidden" name="menuId" th:value="${menu.id}">
+                <input type="hidden" name="type" value="submenu">
+                <div class="mb-3">
+                    <label for="subMenuName" class="form-label">Folder Name</label>
+                    <input id="subMenuName" type="text" name="subMenuName" class="form-control smartos-input"
+                           placeholder="e.g. Games" required>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                    <i class="bi bi-folder-plus me-1"></i>Add Folder
+                </button>
+            </form>
+        </div>
+
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

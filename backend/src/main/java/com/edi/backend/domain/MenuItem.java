@@ -33,4 +33,14 @@ public class MenuItem {
     @ManyToOne
     @JoinColumn(name = "sub_menu_id")
     private Menu subMenu;
+
+    @PrePersist
+    public void validate() {
+        if (application != null && subMenu != null) {
+            throw new IllegalStateException("MenuItem cannot have both an application and a subMenu");
+        }
+        if (application == null && subMenu == null) {
+            throw new IllegalStateException("MenuItem must have either an application or a subMenu");
+        }
+    }
 }

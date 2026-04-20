@@ -4,6 +4,7 @@ import com.edi.backend.domain.Menu;
 import com.edi.backend.domain.Theme;
 import com.edi.backend.domain.User;
 import com.edi.backend.domain.Wallpaper;
+import com.edi.backend.repository.MenuRepository;
 import com.edi.backend.repository.ThemeRepository;
 import com.edi.backend.repository.UserRepository;
 import com.edi.backend.repository.WallpaperRepository;
@@ -20,6 +21,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final MenuRepository menuRepository;
     private final WallpaperRepository wallpaperRepository;
     private final ThemeRepository themeRepository;
 
@@ -42,6 +44,8 @@ public class UserService {
     }
 
     public void deleteUser(String id) {
+        User user = getById(id);
+        menuRepository.deleteByOwnerAndParentMenuIsNotNull(user);
         userRepository.deleteById(id);
     }
 

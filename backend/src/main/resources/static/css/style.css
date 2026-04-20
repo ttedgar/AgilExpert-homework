@@ -290,6 +290,84 @@ body {
     flex-shrink: 0;
 }
 
+/* ── Minesweeper ── */
+.mine-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 36px);
+    gap: 4px;
+}
+
+.mine-cell {
+    width: 36px;
+    height: 36px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: default;
+    user-select: none;
+}
+
+.mine-cell.mine-flag { color: #FF3B30; }
+
+.mine-cell.mine-hidden {
+    background: var(--bg);
+    color: transparent;
+    cursor: pointer;
+}
+
+.mine-cell.mine-hidden:hover { background: #e0e0e5; }
+
+.mine-cell.mine-exploded {
+    background: #FF3B30;
+    color: white;
+}
+
+.fw-600 { font-weight: 600; }
+
+/* ── OpenMap ── */
+.map-container {
+    width: 100%;
+    height: 70vh;
+    min-height: 400px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+/* ── Contacts ── */
+.contacts-list { display: flex; flex-direction: column; gap: 0; }
+
+.contact-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.contact-row:last-child { border-bottom: none; }
+
+.contact-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.fw-500 { font-weight: 500; }
+
 /* ── Empty state ── */
 .empty-state {
     text-align: center;

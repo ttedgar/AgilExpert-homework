@@ -48,7 +48,7 @@
 
                 <!-- App shortcut -->
                 <a th:if="${item.application != null}"
-                   th:href="@{/app/{type}(type=${item.application.type.name().toLowerCase()})}"
+                   th:href="@{/app/{type}(type=${item.application.type.name().toLowerCase()}, userId=${user.id})}"
                    class="desktop-icon-link">
                     <div class="app-icon" th:classappend="'app-icon-' + ${item.application.type.name()}">
                         <i th:class="${'bi ' + @appIconHelper.icon(item.application.type)}"></i>

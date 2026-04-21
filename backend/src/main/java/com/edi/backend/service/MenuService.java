@@ -1,8 +1,10 @@
 package com.edi.backend.service;
 
+import com.edi.backend.domain.AppType;
 import com.edi.backend.domain.Application;
 import com.edi.backend.domain.Menu;
 import com.edi.backend.domain.MenuItem;
+import com.edi.backend.domain.User;
 import com.edi.backend.repository.MenuItemRepository;
 import com.edi.backend.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuItemRepository menuItemRepository;
+    private final ApplicationService applicationService;
 
     public MenuItem addAppShortcut(Menu menu, Application application, String label) {
         boolean alreadyExists = menu.getItems().stream()
@@ -53,6 +56,16 @@ public class MenuService {
         return subMenu;
     }
 
+    public void addItem(String menuId, String type, String appType, String label, String subMenuName) {
+        Menu menu = getMenuById(menuId);
+        if ("app".equals(type)) {
+            Application app = applicationService.getByType(AppType.valueOf(appType));
+            addAppShortcut(menu, app, label);
+        } else {
+            createSubMenu(menu, subMenuName);
+        }
+    }
+
     public void deleteMenuItem(String menuItemId) {
         menuItemRepository.deleteById(menuItemId);
     }
@@ -61,5 +74,10 @@ public class MenuService {
     public Menu getMenuById(String id) {
         return menuRepository.findByIdWithItems(id)
                 .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public Menu resolveMenu(User user, String menuId) {
+        return menuId != null ? getMenuById(menuId) : user.getMainMenu();
     }
 }

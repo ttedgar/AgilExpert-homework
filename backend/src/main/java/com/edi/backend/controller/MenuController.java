@@ -1,6 +1,5 @@
 package com.edi.backend.controller;
 
-import com.edi.backend.domain.AppType;
 import com.edi.backend.service.ApplicationService;
 import com.edi.backend.service.MenuService;
 import com.edi.backend.service.UserService;
@@ -22,10 +21,8 @@ public class MenuController {
                           @RequestParam(required = false) String menuId,
                           Model model) {
         var user = userService.getById(id);
-        var resolvedMenuId = menuId != null ? menuId : user.getMainMenu().getId();
-        var menu = menuService.getMenuById(resolvedMenuId);
         model.addAttribute("user", user);
-        model.addAttribute("menu", menu);
+        model.addAttribute("menu", menuService.resolveMenu(user, menuId));
         return "users/desktop";
     }
 
@@ -34,9 +31,8 @@ public class MenuController {
                            @RequestParam(required = false) String menuId,
                            Model model) {
         var user = userService.getById(id);
-        var menu = menuId != null ? menuService.getMenuById(menuId) : user.getMainMenu();
         model.addAttribute("user", user);
-        model.addAttribute("menu", menu);
+        model.addAttribute("menu", menuService.resolveMenu(user, menuId));
         model.addAttribute("applications", applicationService.getAllApplications());
         return "menu/edit";
     }
@@ -49,18 +45,12 @@ public class MenuController {
                           @RequestParam(required = false) String label,
                           @RequestParam(required = false) String subMenuName,
                           Model model) {
-        var user = userService.getById(id);
-        var menu = menuService.getMenuById(menuId);
         try {
-            if ("app".equals(type)) {
-                var app = applicationService.getByType(AppType.valueOf(appType));
-                menuService.addAppShortcut(menu, app, label);
-            } else {
-                menuService.createSubMenu(menu, subMenuName);
-            }
+            menuService.addItem(menuId, type, appType, label, subMenuName);
         } catch (IllegalArgumentException e) {
+            var user = userService.getById(id);
             model.addAttribute("user", user);
-            model.addAttribute("menu", menu);
+            model.addAttribute("menu", menuService.getMenuById(menuId));
             model.addAttribute("applications", applicationService.getAllApplications());
             model.addAttribute("error", e.getMessage());
             return "menu/edit";

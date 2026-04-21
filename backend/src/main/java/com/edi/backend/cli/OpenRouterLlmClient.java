@@ -25,6 +25,7 @@ public class OpenRouterLlmClient implements LlmClient {
     private String systemPrompt;
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final RestClient restClient = RestClient.create();
 
     @Override
     public Optional<ToolCall> call(String userMessage, String toolsJson) {
@@ -39,8 +40,7 @@ public class OpenRouterLlmClient implements LlmClient {
                     "tool_choice", "required"
             ));
 
-            String response = RestClient.create()
-                    .post()
+            String response = restClient.post()
                     .uri(url)
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")

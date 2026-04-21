@@ -1,4 +1,4 @@
-package com.edi.backend.web;
+package com.edi.backend.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,4 +1,4 @@
-package com.edi.backend.web;
+package com.edi.backend.util;
 
 import com.edi.backend.domain.AppType;
 import org.springframework.stereotype.Component;

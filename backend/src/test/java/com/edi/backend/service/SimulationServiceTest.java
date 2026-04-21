@@ -120,8 +120,6 @@ class SimulationServiceTest {
         verify(menuService).addAppShortcut(gamesFolder, minesweeper, AppType.MINESWEEPER.label());
     }
 
-    // --- helpers ---
-
     private void stubApplicationLookups() {
         when(applicationService.getByType(AppType.MINESWEEPER)).thenReturn(minesweeper);
         when(applicationService.getByType(AppType.OPENMAP)).thenReturn(openmap);

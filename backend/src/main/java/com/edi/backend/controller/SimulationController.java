@@ -1,4 +1,4 @@
-package com.edi.backend.web;
+package com.edi.backend.controller;
 
 import com.edi.backend.service.SimulationService;
 import lombok.RequiredArgsConstructor;

@@ -5,13 +5,16 @@ import com.edi.backend.service.ApplicationService;
 import com.edi.backend.service.MenuService;
 import com.edi.backend.service.SimulationService;
 import com.edi.backend.service.UserService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 @Profile("dev")
@@ -25,6 +28,14 @@ public class CliPromptRunner implements ApplicationRunner {
     private final MenuService menuService;
     private final ApplicationService applicationService;
     private final SimulationService simulationService;
+
+    private String toolsJson;
+
+    @PostConstruct
+    private void loadTools() throws Exception {
+        toolsJson = new ClassPathResource("llm-tools.json")
+                .getContentAsString(StandardCharsets.UTF_8);
+    }
 
     @Override
     public void run(ApplicationArguments args) {
@@ -42,7 +53,7 @@ public class CliPromptRunner implements ApplicationRunner {
             if (input.equalsIgnoreCase("exit")) break;
 
             System.out.println("...");
-            llmClient.call(input).ifPresentOrElse(
+            llmClient.call(input, toolsJson).ifPresentOrElse(
                     this::execute,
                     () -> System.out.println("I didn't understand that. Try something like: 'open the map for Péter'")
             );

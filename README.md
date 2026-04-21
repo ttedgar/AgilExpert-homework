@@ -4,10 +4,12 @@ A smart device OS simulator built with Spring Boot and Thymeleaf. Users can cust
 
 ## Run locally
 
-> Add your OpenRouter API key to `backend/src/main/resources/application-dev.properties` before running:
+> Copy the example properties file and add your OpenRouter API key before running:
+> ```bash
+> cp backend/src/main/resources/application-dev.properties.example \
+>    backend/src/main/resources/application-dev.properties
 > ```
-> openrouter.api-key=your-key-here
-> ```
+> Then open the file and replace `your-api-key-here` with your key from [openrouter.ai/keys](https://openrouter.ai/keys).
 
 ```bash
 cd backend

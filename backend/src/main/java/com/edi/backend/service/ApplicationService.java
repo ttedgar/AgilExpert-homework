@@ -24,4 +24,13 @@ public class ApplicationService {
     public List<Application> getAllApplications() {
         return applicationRepository.findAll();
     }
+
+    @Transactional
+    public void createIfAbsent(AppType type) {
+        if (applicationRepository.findByType(type).isEmpty()) {
+            Application app = new Application();
+            app.setType(type);
+            applicationRepository.save(app);
+        }
+    }
 }
